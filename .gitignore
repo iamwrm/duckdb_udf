@@ -1,0 +1,101 @@
+# Build artifacts
+build/
+*.o
+*.so
+*.a
+*.dylib
+*.dll
+*.duckdb_extension
+
+# DuckDB specific
+duckdb/
+*.db
+*.duckdb
+
+# Downloaded binaries
+duckdb
+duckdb_*
+*.zip
+
+# Compiled executables
+rapidhash_simple
+test_extension
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+CTestTestfile.cmake
+*.cmake
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS generated files
+Thumbs.db
+.directory
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Archive files (except source)
+*.tar.gz
+*.tgz
+*.tar.bz2
+*.zip
+*.rar
+*.7z
+
+# Python cache (if any Python scripts are added)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Test outputs
+test_output/
+*.test
+
+# Node modules (if any JS tooling is added)
+node_modules/
+
+# Coverage reports
+coverage/
+*.gcov
+*.gcda
+*.gcno
+
+# Profiling data
+*.prof
+gmon.out
+
+# Debug symbols
+*.dSYM/
+
+# Generated documentation
+docs/_build/
+docs/html/
+docs/latex/
+
+# Local configuration files
+.env
+.env.local
+config.local.*
+
+# Rapid hash test files (keep the main ones)
+!rapidhash.h
+!rapidhash_simple.cpp
+!test_rapidhash.sh
