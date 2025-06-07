@@ -1,0 +1,64 @@
+name: Build DuckDB RapidHash Extension
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build Extension
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake build-essential git curl
+        
+    - name: Clone DuckDB v1.3.0
+      run: |
+        git clone --branch v1.3.0 --depth 1 https://github.com/duckdb/duckdb.git
+        
+    - name: Download RapidHash header
+      run: |
+        curl -L -o rapidhash.h https://raw.githubusercontent.com/Nicoshev/rapidhash/master/rapidhash.h
+        
+    - name: Copy extension to DuckDB
+      run: |
+        cp -r rapidhash_ext duckdb/extension/rapidhash
+        cp rapidhash.h duckdb/extension/rapidhash/
+        
+    - name: Build DuckDB with extension
+      run: |
+        cd duckdb
+        make release BUILD_EXTENSIONS="rapidhash" -j$(nproc)
+        
+    - name: Test simple RapidHash implementation
+      run: |
+        g++ -o rapidhash_simple rapidhash_simple.cpp -std=c++17
+        ./rapidhash_simple "Hello GitHub Actions"
+        
+    - name: Test extension loading
+      run: |
+        cd duckdb
+        echo "LOAD 'build/release/extension/rapidhash/rapidhash.duckdb_extension'; SELECT rapidhash('test');" | ./build/release/duckdb
+        
+    - name: Run extension tests
+      run: |
+        if [ -f test_rapidhash.sh ]; then
+          chmod +x test_rapidhash.sh
+          ./test_rapidhash.sh
+        else
+          echo "No test script found, skipping extended tests"
+        fi
+        
+    - name: Upload extension artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: rapidhash-extension
+        path: duckdb/build/release/extension/rapidhash/rapidhash.duckdb_extension
